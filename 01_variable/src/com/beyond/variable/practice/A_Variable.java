@@ -109,4 +109,109 @@ public class A_Variable {
         
 
     }
+
+    /*
+        자동 형 변환
+        - 데이터 표현 범위가 작은 자료형을 큰 자료형으로 변환
+     */
+    public void autoCasting(){
+        byte bNum = 10;
+        short sNum = 12;
+        int iNum = sNum;    // short -> int 자동 형 변환된다
+        long lNum = iNum;   // int -> long 자동 형 변환된다
+        // float 타입이 long 타입보다 표현 가능한 수의 범위가 더 크기 때문에 자동 형 변환된다.
+        float fNum = lNum;
+        double dNum = fNum;
+
+        System.out.println("bNum = " + bNum);
+        System.out.println("sNum = " + sNum);
+        System.out.println("lNum = " + lNum);
+        System.out.println("iNum = " + iNum);
+        System.out.println("fNum = " + fNum);
+        System.out.println("dNum = " + dNum);
+        System.out.println();
+
+        char ch = 'A';
+        iNum = ch;
+
+        // char은 음수가 저장될 수 없기 때문에 byte울 char으로 지동 형 변환 시킬 수 없다
+        // ch = bNum;
+
+
+        System.out.println("ch = " + ch);
+        System.out.println("iNum = " + iNum);
+        System.out.println();
+
+
+        double result = 12 + 3.3; // 12.0 + 3.3 = 15.3
+        // byte, short 타입의 연산 시 무조건 int 타입으로 변환 후 처리
+        // int result2 = sNum + sNum;
+        byte result2 = 10 + 20;
+        long result3 = 30 + 30; // 30 + 30 = 60,  60을 long 타입으로 형 변환 후 대입(60L)
+        long result4 = 30 + 30L; // 30L + 30L = 60L
+
+        System.out.println("result = " + result);
+        System.out.println("result2 = " + result2);
+        System.out.println("result3 = " + result3);
+        System.out.println("result4 = " + result4);
+        System.out.println();
+    }
+
+    /*
+        강제 형 변환
+        - 데이터 표현 범위가 큰 자료형을 작은 자료형으로 변환
+
+        [표현법]
+            (자료형) 데이터;
+     */
+    public void casting(){
+        double dNum = 4.234567893456789;
+        float fNum = (float)dNum;
+        int iNum = (int) fNum;
+
+        System.out.println("dNum = " + dNum);
+        System.out.println("fNum = " + fNum);
+        System.out.println("iNum = " + iNum);
+        System.out.println((byte)290);
+        System.out.println();
+
+        // int sum = (int) (iNum + dNum);
+        int sum = iNum + (int)dNum;
+
+        System.out.println("sum = " + sum);
+
+
+
+    }
+
+    /*
+        실습 무제
+        홍길동 국어 점수 60, 영어 점수 70점, 수학 점수 66점을 받았다
+        이 학생의 총저모가 평균을 출력하세요
+
+        예시)
+        국어 점수 : 60점
+        영어 점수 : 70점
+        수학 점수 : 66점
+
+        총점 : 196점
+        평균 : 65점
+     */
+
+    public void practice(){
+        int kor = 60;
+        int eng = 70;
+        int math = 66;
+        int sum = kor + eng + math;
+        int avg = sum/3;
+
+        System.out.println("국어 점수 : " + kor + "점");
+        System.out.println("영어 점수 : " + eng + "점");
+        System.out.println("수학 점수 : " + math + "점");
+        System.out.println();
+        System.out.println("총점 : " + sum + "점");
+        System.out.println("평균 : " + avg + "점");
+
+    }
+
 }
