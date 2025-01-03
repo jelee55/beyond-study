@@ -26,7 +26,6 @@ public class Application {
         // com.beyond.variable.practice.A_Variable variable = new com.beyond.variable.practice.A_Variable();
         A_Variable variable = new A_Variable();
         B_ConsoleOutput output = new B_ConsoleOutput();
-        C_KeyBoardInput input = new C_KeyBoardInput();
         // 2. 생성한 클래스로 메소드를 실행(호출)
         //  [표현법]
         //      변수명.메소드명();
@@ -35,7 +34,7 @@ public class Application {
         // variable.casting();
         // variable.practice();
         // output.valuePrint();
-        input.inputByScanner();
+        new C_KeyBoardInput().inputByScanner();
 
     }
 
