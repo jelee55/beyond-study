@@ -36,7 +36,7 @@ public class H_MethodReference {
         System.out.println(function.apply(new Student("임꺽정", 30)));
 
         // 생성자 참조
-        // -
+        // - 클래스 이름 뒤에 :: 붙이고 new 연산자를 기술
         // Supplier<Student> supplier = () -> new Student();
         Supplier<Student> supplier = Student::new;
         System.out.println(supplier.get());
