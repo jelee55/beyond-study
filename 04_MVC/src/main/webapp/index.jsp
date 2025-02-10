@@ -9,17 +9,25 @@
 </head>
 <body>
     <h2>Hello World</h2>
+    <c:if test="${empty loginUser}">
+        <form action="${contextPath}/login" method="post">
+            <label for="userId">id : </label>
+            <input type="text" id="userId" name="userId"/>
+            <br>
+            <label for="userPwd">password : </label>
+            <input type="password" id="userPwd" name="userPwd"/>
+            <br>
+            <input type="button" onclick="location.assign('${contextPath}/user/enroll');" value="join"/>
+            <input type="submit" value="login"/>
+        </form>
+    </c:if>
+    <c:if test="${not empty loginUser}">
+        ${loginUser.name}님 안녕하세요
 
-    <form action="${contextPath}/login" method="post">
-        <label for="userId">id : </label>
-        <input type="text" id="userId" name="userId"/>
-        <br>
-        <label for="userPwd">password : </label>
-        <input type="password" id="userPwd" name="userPwd"/>
-        <br>
-        <input type="button" value="join"/>
-        <input type="submit" value="login"/>
-    </form>
+        <form action="${contextPath}/logout" method="post">
+            <input type="submit" value="logout">
+        </form>
+    </c:if>
 
 </body>
 </html>
