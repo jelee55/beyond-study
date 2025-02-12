@@ -9,5 +9,10 @@ public interface UserDao {
 
     int insertUser(Connection connection, User user);
 
+    int updateUser(Connection connection, User user);
+
+    int delete(Connection connection, int no);
+
+    int updateDeleteStatus(Connection connection, int no, String status);
 }
 

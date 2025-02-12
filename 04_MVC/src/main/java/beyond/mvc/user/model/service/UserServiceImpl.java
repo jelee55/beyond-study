@@ -38,7 +38,13 @@ public class UserServiceImpl implements UserService {
 
         Connection connection = getConnection();
 
-        result = userDao.insertUser(connection, user);
+        if (user.getNo() > 0) {
+            // update
+            result = userDao.updateUser(connection, user);
+        }else{
+            result = userDao.insertUser(connection, user);
+
+        }
 
         if (result > 0) {
             commit(connection);
@@ -50,4 +56,27 @@ public class UserServiceImpl implements UserService {
 
         return result;
     }
+
+    @Override
+    public int delete(int no) {
+        int result = 0;
+
+        Connection connection = getConnection();
+
+        // result = userDao.delete(connection, no);
+        result = userDao.updateDeleteStatus(connection, no, "N");
+
+        if (result > 0) {
+            commit(connection);
+        }else {
+            rollback(connection);
+        }
+
+        close(connection);
+
+
+        return result;
+    }
+
+
 }
