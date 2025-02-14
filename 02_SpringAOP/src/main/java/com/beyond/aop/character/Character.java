@@ -29,14 +29,17 @@ public class Character {
     private int level;
 
     @Autowired
-    @Qualifier("sword")
+    // @Qualifier("sword") // Bow가 Primary
     private Weapon weapon;
 
     // AOP 메소드 호출되는 런타임에만 적용???
-    public void quest(String questName){
+    public String quest(String questName){
+//        if (true){
+//            throw  new RuntimeException("/quest()임/Quest 수행 중 예외 발생");
+//        }
 
-        System.out.printf("%s 퀘스트 진행 중...\n" , questName);
-
+//        System.out.printf("%s 퀘스트 진행 중...\n" , questName);
+        return questName + " 퀘스트 진행 중";
     }
 
 

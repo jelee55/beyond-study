@@ -23,7 +23,7 @@ class CharacterTest {
     private Character character;
 
     @Test
-    @Disabled
+    @Disabled  // 제외
     void test() {
     }
 
@@ -37,7 +37,15 @@ class CharacterTest {
     
     @Test
     void questTest(){
-        character.quest("도토리 줍기");
+        assertThat(character.quest("도토리 줍기")).isNotNull().contains("도토리");
     }
+
+    @Test
+    void attackTest(){
+        assertThat(character.getWeapon()).isNotNull();
+        assertThat(character.getWeapon().attack()).isNotNull();
+
+    }
+
 
 }
