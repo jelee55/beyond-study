@@ -15,6 +15,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.source>21</maven.compiler.source>
         <junit.version>5.11.0</junit.version>
+        <org.springframework.version>6.2.2</org.springframework.version>
     </properties>
 
     <dependencies>
@@ -40,12 +41,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>6.2.2</version>
+            <version>${org.springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>6.2.2</version>
+            <version>${org.springframework.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- lombok -->
@@ -54,6 +55,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.36</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.2</version>
         </dependency>
         <!-- logging 관련 라이브러리 -->
         <dependency>
@@ -77,6 +84,14 @@
 
     <build>
         <plugins>
+            <!-- 컴파일 시 메소드의 매개변수명을 유지해서 class 파일을 생성하도록 설정 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
