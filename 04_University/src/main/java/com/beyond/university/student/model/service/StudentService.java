@@ -6,4 +6,10 @@ import java.util.List;
 
 public interface StudentService {
     List<Student> getStudentsByDeptNo(String deptNo);
+
+    Student getstudentByNo(String sno);
+
+    int save(Student student);
+
+    int delete(String sno);
 }

@@ -6,21 +6,38 @@
 </head>
 <body>
     <main>
-
-      <h3>학생 조회</h3>
-      <form th:action="@{/student/search}" method="get"
+        <h3>학생 조회</h3>
+        <form th:action="@{/student/search}" method="get"
             th:with="deptNo=${#strings.toString(param.deptNo)}">
-        <label for="deptNo">학과 : </label>
-        <select name="deptNo" id="deptNo">
-          <option>--- 선택 ---</option>
-          <option th:each=" department : ${departments}"
-                  th:text="${department.name}"
-                  th:value="${department.no}"
-                  th:selected="${deptNo eq department.no}"></option>
-        </select>
-        <input type="submit" value="검색">
-      </form>
-
+            <label for="deptNo">학과 : </label>
+            <select name="deptNo" id="deptNo">
+              <option>--- 선택 ---</option>
+              <option th:each=" department : ${departments}"
+                      th:text="${department.name}"
+                      th:value="${department.no}"
+                      th:selected="${deptNo eq department.no}"></option>
+            </select>
+            <input type="submit" value="검색">
+        </form>
+        <table border="1" style="width: 80%; height: 100%; text-align: center;">
+            <tr>
+                <th>학번</th>
+                <th>이름</th>
+                <th>주소</th>
+                <th>휴학 여부</th>
+            </tr>
+            <tr th:if="${students == null}">
+                <td colspan="4">조회된 데이터가 없으</td>
+            </tr>
+            <tr th:if="${students != null}" th:each="student:${students}">
+                <td>
+                    <a th:text="${student.no}" th:href="@{/student/info(sno=${student.no})}"></a>
+                </td>
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.address}"></td>
+                <td th:text="${student.absenceYn}"></td>
+            </tr>
+        </table>
     </main>
 </body>
 </html>

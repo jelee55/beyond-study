@@ -9,4 +9,9 @@ import java.util.List;
 @Mapper
 public interface StudentMapper {
     List<Student> selectAllByDeptNo(@Param("deptNo") String deptNo);
+    Student selectStudentByNo(@Param("sno") String studentNo);
+    int insertStudent(Student student);
+    int updateStudent(Student student);
+    int deleteStudent(String sno);
 }
+

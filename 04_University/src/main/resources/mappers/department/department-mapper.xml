@@ -21,11 +21,9 @@
         쿼리문의 수행 결과를 담은 ResultSet을 resultType의 객체에 조회 결과를 자동으로 매핑해서 리턴
         단, 조회 결과의 컬럼명과 자바 클래스의 필드명이 동일해야 자동으로 매핑됨(대소문자는 구분하지 않음)
     -->
-<!--    <select id="selectAll" resultType="Department">-->
+    <!-- <select id="selectAll" resultType="Department"> -->
     <select id="selectAll" resultMap="departmentResultMap">
-        <!--
-            방법 1) 쿼리문에 "AS 별칭"으로 조회되는 컬럼명을 변경
-        -->
+        <!-- 방법 1) 쿼리문에 "AS 별칭"으로 조회되는 컬럼명을 변경 -->
         SELECT department_no
              , department_name
              , category
