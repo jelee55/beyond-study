@@ -19,4 +19,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentMapper.selectAll();
 //        return List.of();
     }
+
+    @Override
+    public Department getDepartmentByNo(String deptNo) {
+
+        return departmentMapper.selectDepartmentByNo(deptNo);
+    }
 }

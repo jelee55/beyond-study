@@ -4,6 +4,14 @@
   <!-- 프래그먼트 속성을 이용해 공통 부분을 조각화하고 재사용 -->
   <header th:fragment="header">
     <h2><a th:href="@{/}" style="color: black; text-decoration: none">spring boot web</a></h2>
+    <form th:action="@{/logout}" method="post">
+      <!--
+        알아서 설정해줌?
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      -->
+      <input type="button" value="내정보"/>
+      <input type="submit" value="로그아웃"/>
+    </form>
   </header>
   <footer th:fragment="footer">
     <p>CopyRight@HONG hong123@beyond.com</p>

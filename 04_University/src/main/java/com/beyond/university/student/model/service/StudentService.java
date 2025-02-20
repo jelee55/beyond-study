@@ -7,7 +7,7 @@ import java.util.List;
 public interface StudentService {
     List<Student> getStudentsByDeptNo(String deptNo);
 
-    Student getstudentByNo(String sno);
+    Student getStudentByNo(String sno);
 
     int save(Student student);
 

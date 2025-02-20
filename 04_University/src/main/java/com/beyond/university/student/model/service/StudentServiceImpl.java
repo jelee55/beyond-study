@@ -19,7 +19,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student getstudentByNo(String sno) {
+    public Student getStudentByNo(String sno) {
         return studentMapper.selectStudentByNo(sno);
     }
 
