@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
   <!-- 프래그먼트 속성을 이용해 공통 부분을 조각화하고 재사용 -->
   <header th:fragment="header">
     <h2><a th:href="@{/}" style="color: black; text-decoration: none">spring boot web</a></h2>
+
+    <!-- 사용자 권한에 따라 HTML 요소를 표시하거나 숨길 수 있음 -->
+    <!--
+        <p sec:authorize="!hasRole('ADMIN')">관리자님 안녕하세요</p>
+    -->
+    <p sec:authorize="hasRole('ADMIN')">관리자님 안녕하세요</p>
+    <p sec:authorize="hasRole('USER')">
+      <span sec:authentication="principal.username"></span>님 안녕하세요</p>
+
     <form th:action="@{/logout}" method="post">
       <!--
         알아서 설정해줌?

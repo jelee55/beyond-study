@@ -1,17 +1,22 @@
 package com.beyond.university.config;
 
+import com.beyond.university.auth.handler.LoginFailureHandler;
+import com.beyond.university.auth.handler.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
+
 
 @Controller
 @EnableWebSecurity
@@ -40,13 +45,22 @@ public class SecurityConfig {
                         form
                                 .loginPage("/login")
                                 .usernameParameter("userId")
-                                .passwordParameter("userPwd"))
+                                .passwordParameter("userPwd")
+                                .successHandler(loginSuccessHandler())
+                                .failureHandler(loginFailureHandler())
+                )
                 .logout(logout ->
                         logout
                                 .logoutUrl("/logout")
                                 .logoutSuccessUrl("/login?logout=true")
                                 .invalidateHttpSession(true) // logout 하면 session 삭제 true
                                 .deleteCookies("JSESSIONID") //  JSESSIONID(cookies)삭제
+                )
+                // 에러 핸들러 설정
+                .exceptionHandling(exception ->
+                        // 권한이 없는 계정에서 잘못된 접근 시 이동할 URL을 지정한다.
+                        exception
+                                .accessDeniedPage("/accessDenied")
                 )
                 // 기억하기 기능 설정
                 .rememberMe(rememberMe ->
@@ -69,6 +83,8 @@ public class SecurityConfig {
                             // 정적 리소스 허용
                             .requestMatchers("/js/**", "/css/**","images/**").permitAll()
                             .requestMatchers("/login").permitAll() // 인증하지 않은 모든 유저 허용
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
+                            .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                             .anyRequest().authenticated()   // 인증을 하면 허용
                 );
     //=====================================================================================//
@@ -78,6 +94,9 @@ public class SecurityConfig {
     }
 
 
+
+    //    UserDetailsService
+    //      - 전달받은 정보를 통해 사용자를 찾아 UserDetails 객체를 생성한다.
     // db랑 연결x 임시 데이터
     //    @Bean
     //    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
@@ -97,9 +116,36 @@ public class SecurityConfig {
     //        return new InMemoryUserDetailsManager(user, admin);
     //    }
 
-    // passwordEncoder 설정 (BCrypt)
+
+    //  AuthenticationManager
+    //   - 유저들에 대한 인증과 관련된 설정을 하는 객체이다.
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(); // DaoAuthenticationProvider db 연결할 때 필요
+
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(provider);
+    }
+
+    // passwordEncoder 설정 (BCrypt 적용)
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // AuthenticationSuccessHandler, AuthenticationFailureHandler 설정
+    @Bean
+    public AuthenticationSuccessHandler loginSuccessHandler() {
+
+        return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler loginFailureHandler() {
+
+        return new LoginFailureHandler();
     }
 }
