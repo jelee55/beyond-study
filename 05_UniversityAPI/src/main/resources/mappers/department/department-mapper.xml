@@ -68,6 +68,33 @@
         #{capacity}
         )
     </insert>
+    <update id="updateDepartment" parameterType="Department">
+        UPDATE tb_department
+        <set>
+            <if test="name != null">
+                department_name = #{name},
+            </if>
+            <if test="category != null">
+                category = #{category},
+            </if>
+            <if test="openYn != null">
+                open_yn = #{openYn},
+            </if>
+            <if test="capacity >= 0">
+                capacity = #{capacity}
+            </if>
+        </set>
+        WHERE
+            department_no = #{no}
+    </update>
+
+    <delete id="deleteDepartment" parameterType="string">
+        DELETE FROM tb_department
+        WHERE department_no = #{deptNo}
+    </delete>
 
 
+    <select id="">
+        SELECT class_name FROM tb_class WHERE department_no = #{deptNo}
+    </select>
 </mapper>

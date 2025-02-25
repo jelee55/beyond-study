@@ -12,7 +12,14 @@ mybatis:
     - classpath:mappers/**/*.xml
   configuration:
     jdbc-type-for-null: NULL
-
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+  paths-to-match:
+  - /api/v1/**
+springboot:
+  jwt:
+    secret: h1o2n3gg5i6l7d8o9n0g;h1o2n3gg5i6l7d8o9n0g
 
 
 
