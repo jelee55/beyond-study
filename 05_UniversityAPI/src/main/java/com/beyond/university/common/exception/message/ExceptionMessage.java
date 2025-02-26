@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ExceptionMessage {
-    DEPARTMENT_NOT_FOUND("확과 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND);
+    DEPARTMENT_NOT_FOUND("확과 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+    INVALID_CREDENTIALS("아이디 또는 비밀번호가 올바르지 않습니다.", HttpStatus.UNAUTHORIZED);
 
     private final String message;
     private final HttpStatus status;

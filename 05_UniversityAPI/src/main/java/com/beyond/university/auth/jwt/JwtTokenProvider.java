@@ -3,9 +3,9 @@ package com.beyond.university.auth.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,18 +18,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
 public class JwtTokenProvider {
-
     private final SecretKey secretKey;
     private final UserDetailsService userDetailsService;
-    private static final long ACCESS_TOKEN_EXP = 1000L * 60L *15L; // 15분
+    private final RedisTemplate<String, String> redisTemplate;
+    private static final long ACCESS_TOKEN_EXP = 1000L * 60L * 15L; // 15분
 
     public JwtTokenProvider(
             @Value("${springboot.jwt.secret}") String secret,
-            UserDetailsService userDetailsService) {
+            UserDetailsService userDetailsService,
+            RedisTemplate<String, String> redisTemplate) {
 
         log.debug("Secret: {}", secret);
 
@@ -38,29 +40,38 @@ public class JwtTokenProvider {
                 Jwts.SIG.HS256.key().build().getAlgorithm()
         );
         this.userDetailsService = userDetailsService;
+        this.redisTemplate = redisTemplate;
     }
 
-    // AssessToken 생성하는 메소드
-    public String createAccessToken(String username, String roles){
+    // AccessToken을 생성하는 메소드
+    public String createAccessToken(String username, String role) {
         Map<String, String> claims = new HashMap<>();
-        claims.put("username", username);
-        claims.put("roles", roles);
 
-        return createToke(claims, ACCESS_TOKEN_EXP);
+        claims.put("username", username);
+        claims.put("role", role);
+
+        return createToken(claims, ACCESS_TOKEN_EXP);
     }
 
-    private String createToke(Map<String, String> claims, long tokenExp) {
+    // RefreshToken을 생성하는 메소드
+    public String createRefreshToken(String username) {
+
+        return "";
+    }
+
+    private String createToken(Map<String, String> claims, long tokenExp) {
 
         return Jwts.builder()
+                .header().add("typ", "JWT").and() // typ 헤더 추가
                 .claims(claims) // 공개 클래임
                 .id(Long.toHexString(System.nanoTime())) // jti(JWT ID) 클래임
                 .issuedAt(new Date()) // 발급 시간 설정
                 .expiration(new Date(System.currentTimeMillis() + tokenExp)) // 만료 시간 설정
                 .signWith(secretKey) // 서명을 생성
-                .compact();
+                .compact(); // JWT 토큰을 생성
     }
 
-    // 토큰이 유효한지 체크하는 메소드( 토큰이 유효하면 true, 만료되었으면 false 반환)
+    // 토큰이 유효한지 체크하는 메소드 (토큰이 유효하면 true, 만료되었으면 false 반환)
     public boolean validateToken(String token) {
         Jws<Claims> claims = Jwts
                 .parser()
@@ -71,12 +82,12 @@ public class JwtTokenProvider {
         return !claims.getPayload().getExpiration().before(new Date());
     }
 
-
-    // 클라이언특가 헤더를 통해 서버로 전달한 토큰을 추출하는 메소드
+    // 클라이언트가 헤더를 통해 서버로 전달한 토큰을 추출하는 메소드
     public String resolveToken(String bearerToken) {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken = bearerToken.substring(7);
+            return bearerToken.substring(7);
         }
+
         return null;
     }
 
@@ -95,13 +106,45 @@ public class JwtTokenProvider {
     private String getUserName(String token) {
 
         return Jwts
-            .parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("username")
-            .toString();
+                .parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("username")
+                .toString();
     }
 
+
+    // logout 시 블랙리스트에 Access Token을 저장
+    public void addBlacklist(String accessToken) {
+        String key = "blacklist:" + getJti(accessToken);
+
+        redisTemplate.opsForValue().set(key, "true", ACCESS_TOKEN_EXP, TimeUnit.MILLISECONDS); // set(key , value, 만료 시간설정, 만료시간타입?)
+    }
+
+    private String getJti(String token) {
+
+        return Jwts
+                .parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getId();
+
+    }
+
+    // 블랙리스트 등록 여부 확인
+    public boolean isBlacklisted(String token) {
+        String key = "blacklist:" + getJti(token);
+        return redisTemplate.hasKey(key);
+    }
 }
+
+
+
+
+
+
+
